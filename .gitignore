@@ -78,6 +78,9 @@ target/
 # exclude data from source control by default
 *.csv
 *.pkl
+*.zip
+*.parquet
+*.txt
 
 # Mac OS-specific storage files
 .DS_Store

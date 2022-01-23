@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import pathlib
 
 def get_filenames_in_dir(dir:pathlib.Path)->list:

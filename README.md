@@ -1,6 +1,7 @@
-# Minimal Project Template
+# rtr-netztest
 
-A minimal template to start from when working on data science projects.
+Exploring gradient boosting algorithms on internet speedtest data.
+> __NOTE:__ _Currently still work in progress_
 
 ## Setup environment
     make environment

@@ -14,3 +14,9 @@ environment:
 
 test:
 	@$(CONDA_ACTIVATE) $(PROJECT_NAME); pytest
+
+load_data:
+	wget -N https://www.netztest.at/RMBTStatisticServer/export/netztest-opendata.zip -P ./data/raw/
+	unzip ./data/raw/netztest-opendata.zip -d ./data/raw/
+	rm ./data/raw/netztest-opendata.zip
+	
