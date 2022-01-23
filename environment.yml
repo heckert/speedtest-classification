@@ -1,0 +1,13 @@
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - matplotlib=3.3.4
+  - python[version='3.9']
+  - pandas=1.2.4
+  - numpy=1.19.2
+  - flake8
+  - pytest
+  - pip
+  - pip:
+      - -e .
