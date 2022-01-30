@@ -1,0 +1,31 @@
+paths:
+  data:
+    main: ./data
+    raw: ${paths.data.main}/raw
+    interim: ${paths.data.main}/interim
+    processed: ${paths.data.main}/processed
+  
+files:
+  raw_dataset: netztest-opendata.csv
+  processed_dataset: netztest-opendata-processed.csv
+
+features:
+  native:
+    - cat_technology
+    - lat
+    - long
+    - download_kbit
+    - upload_kbit
+    - ping_ms
+    - lte_rsrp
+    - platform
+    - network_name
+    - signal_strength
+  custom:
+    datetime_hour: hour
+    datetime_hour_category: hour_cat
+
+  
+target:
+ cat_technology: str
+
