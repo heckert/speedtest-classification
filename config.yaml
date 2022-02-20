@@ -9,23 +9,29 @@ files:
   raw_dataset: netztest-opendata.csv
   processed_dataset: netztest-opendata-processed.csv
 
+filters:
+  cat_technology:
+    - 3G
+    - 4G
+    - 5G
+  platform:
+    - iOS
+
 features:
-  native:
-    - cat_technology
+  numerics:
     - lat
     - long
     - download_kbit
     - upload_kbit
     - ping_ms
     - lte_rsrp
+    - signal_strength
+    - hour
+  categories:
     - platform
     - network_name
-    - signal_strength
-  custom:
-    datetime_hour: hour
-    datetime_hour_category: hour_cat
+    - hour_cat
 
-  
 target:
- cat_technology: str
+ cat_technology
 
