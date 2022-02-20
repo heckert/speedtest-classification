@@ -47,8 +47,8 @@ def main():
             'gkz': 'str',
             'implausible': 'str',
             'pinned': 'str',
-            }
-        )
+        }
+    )
 
     # Parse time_utc field and extract hour
     df.time_utc = pd.to_datetime(df.time_utc, errors='coerce')
