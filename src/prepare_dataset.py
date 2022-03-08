@@ -42,8 +42,7 @@ def main():
 
     # Load the data
     df = pd.read_csv(
-        raw_file, 
-        dtype={
+        raw_file, dtype={
             'gkz': 'str',
             'implausible': 'str',
             'pinned': 'str',
