@@ -7,7 +7,8 @@ def plot_comparison_histogram(
     categories: pd.Series,
     *args,
     title: str = None,
-    dropna=True,
+    dropna: bool = True,
+    vlines: list = None, 
     **kwargs
 ):
     for cat in categories.unique():
@@ -22,11 +23,16 @@ def plot_comparison_histogram(
             label=cat,
             density=True,
             alpha=.5,
-            **kwargs
+            **kwargs,
         )
 
     if title is not None:
         plt.title(title)
+
+    if vlines is not None:
+        for line in vlines:
+            plt.axvline(line, linestyle='--', color='grey')
+        
 
     plt.legend()
     plt.show()
