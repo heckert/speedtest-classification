@@ -39,7 +39,6 @@ def main():
 
     # Log how many cases are filtered
     counts = filter_.value_counts()
-    n_selected = counts.loc[True]
     n_not_selected = counts.loc[False]
 
     logging.debug(
@@ -50,7 +49,10 @@ def main():
     )
 
     df = df[filter_]
-    logging.debug('Number of rows/cols in processed dataframe: {:,} / {}'.format(*df.shape))
+    logging.debug(
+        'Number of rows/cols in processed dataframe: {:,} / {}'
+        .format(*df.shape)
+    )
 
     # Store data as csv
     df.to_csv(processed_file, index=False)

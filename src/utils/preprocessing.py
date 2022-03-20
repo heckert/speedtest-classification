@@ -1,6 +1,7 @@
 import pandas as pd
 import operator
 
+
 valid_operators = {
     'equals': operator.eq,
     'greater': operator.gt,
@@ -9,13 +10,16 @@ valid_operators = {
     'less-or-equal': operator.le
 }
 
+
 def parse_filters(df: pd.DataFrame, filters: dict) -> pd.Series:
     """Get filters from config and create single pandas mask
 
     Args:
-        df (pandas.DataFrame): Dataframe to be filtered
-        filters (dict): Which filters to apply
-            Key needs to be in 
+        df (pandas.DataFrame): Dataframe to be filtered.
+        filters (dict): Which filters to apply.
+
+    Returns:
+        pandas.Series: Mask to filter dataframe.
     """
 
     # Evaluate operators passed in filters-dict
@@ -33,7 +37,7 @@ def parse_filters(df: pd.DataFrame, filters: dict) -> pd.Series:
             ', '.join(allowed_operators))
         )
 
-    # Iterate through passed filters and create 
+    # Iterate through passed filters and create
     # single pandas mask
     trues = pd.Series([True for _ in range(df.shape[0])])
     falses = pd.Series([False for _ in range(df.shape[0])])
@@ -41,10 +45,9 @@ def parse_filters(df: pd.DataFrame, filters: dict) -> pd.Series:
     ands = trues.copy()
     for colname, operator_dict in filters.items():
         ors = falses.copy()
-        for operator, values in operator_dict.items():
+        for op, values in operator_dict.items():
             for value in values:
-                #stmt_to_eval = 'df[colname] {} value'.format(valid_operators.get(operator))
-                comparison_func = valid_operators.get(operator)
+                comparison_func = valid_operators.get(op)
                 tmp_cond = comparison_func(df[colname], value)
 
                 ors = ors | tmp_cond

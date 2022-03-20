@@ -2,13 +2,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+
 def plot_comparison_histogram(
     metric: pd.Series,
     categories: pd.Series,
     *args,
     title: str = None,
     dropna: bool = True,
-    vlines: list = None, 
+    vlines: list = None,
     **kwargs
 ):
     for cat in categories.unique():
@@ -32,8 +33,6 @@ def plot_comparison_histogram(
     if vlines is not None:
         for line in vlines:
             plt.axvline(line, linestyle='--', color='grey')
-        
 
     plt.legend()
     plt.show()
-
