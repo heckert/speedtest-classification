@@ -9,26 +9,29 @@ files:
   raw_dataset: netztest-opendata.csv
   processed_dataset: netztest-opendata-processed.csv
 
+logging:
+  level: DEBUG
+  fmt: '[%(asctime)s] %(message)s'
+  date_fmt: '%Y-%m-%d %H:%M:%S'
+
 filters:
   cat_technology:
-    - 3G
-    - 4G
-    - 5G
+    equals:
+      - 3G
+      - 4G
+      - 5G
 
-features:
-  numerics:
-    - lat
-    - long
-    - download_kbit
-    - upload_kbit
-    - ping_ms
-    - lte_rsrp
-    - signal_strength
-    - hour
-  categories:
-    - platform
-    - network_name
-    - hour_cat
+inputs:
+# Which columns from the raw dataset should be kept
+  - lat
+  - long
+  - download_kbit
+  - upload_kbit
+  - ping_ms
+  - lte_rsrp
+  - signal_strength
+  - platform
+  - network_name
 
 target:
  cat_technology

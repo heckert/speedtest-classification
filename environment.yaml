@@ -2,16 +2,17 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - matplotlib=3.3.4
-  - python[version='3.10']
-  - pandas=1.2.4
-  - numpy=1.19.2
+  - matplotlib
+  - pandas
+  - numpy
   - flake8
   - pytest
+  - scikit-learn
   - lightgbm
   - ipykernel
   - pandas-profiling
-  - omegaconf
+  - omegaconf=2.0.0  # avoid antlr warning in vs code
   - pip
   - pip:
+      - antlr4-python3-runtime==4.8
       - -e .

@@ -7,6 +7,14 @@ Exploring gradient boosting algorithms on internet speedtest data.
     make environment
 will create a conda environment with the packages listed in `environment.yml`.
 
+## Load raw data
+    make raw_data
+will load the dataset from the web.
+
+## Select input data
+    make input_data
+will select relevant instances and inputs for further modelling / feature generation.
+
 ## Run tests
     make tests
 will run the tests.  

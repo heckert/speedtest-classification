@@ -15,12 +15,19 @@ environment:
 test:
 	@$(CONDA_ACTIVATE) $(PROJECT_NAME); pytest
 
-load_raw_data:
+# load raw data from the web
+raw_data:
 # remove possible prior contents
 	@rm -f ./data/raw/*
 # load zipped data from url and store it in `data/raw`
 	wget -N https://www.netztest.at/RMBTStatisticServer/export/netztest-opendata.zip -P ./data/raw/
 # unzip and remove the zip
-	unzip ./data/raw/netztest-opendata.zip -d ./data/raw/
+	unzip ./data/raw/netztest-opendata.zip -d .
+	/data/raw/
 	rm ./data/raw/netztest-opendata.zip
+
+# select relevant rows and columns for modelling
+input_data:
+	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python -m src --prepareInputData
+
 	
