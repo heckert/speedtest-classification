@@ -28,27 +28,23 @@ def main():
 
     df = pd.read_csv(raw_file, dtype=str_types)
 
+    # Transform kbit/s to mbit/s
+    df['download_mbit'] = df.download_kbit / 1e3
+    df['upload_mbit'] = df.upload_kbit / 1e3
+
     # Get full list of columns to select
     all_columns = cfg.inputs + [cfg.target]
 
     # Select relevant columns
     df = df[all_columns]
 
-    # Select only relevant technologies
-    filter_ = src.utils.preprocessing.parse_filters(df, cfg.filters)
+    # Remove cases according to
+    # filter defined in config.yaml
+    if cfg.filters is not None:
+        df = src.utils.preprocessing.apply_filters(df=df, filters=cfg.filters)
+    else:
+        logging.debug('No filters applied')
 
-    # Log how many cases are filtered
-    counts = filter_.value_counts()
-    n_not_selected = counts.loc[False]
-
-    logging.debug(
-        'Filtered out {negative:,} of {total:,} ({percentage}%)'.format(
-            negative=n_not_selected, total=len(df),
-            percentage=round(n_not_selected/len(df)*100, 1)
-        )
-    )
-
-    df = df[filter_]
     logging.debug(
         'Number of rows/cols in processed dataframe: {:,} / {}'
         .format(*df.shape)

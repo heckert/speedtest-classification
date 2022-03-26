@@ -10,7 +10,7 @@ CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activ
 environment:
 # create conda env from environemt.yml file
 	@echo "Creating conda environment for $(PROJECT_NAME)..."
-	@conda env create -n $(PROJECT_NAME) -f environment.yml
+	@conda env create -n $(PROJECT_NAME) -f environment.yaml
 
 test:
 	@$(CONDA_ACTIVATE) $(PROJECT_NAME); pytest
@@ -22,8 +22,7 @@ raw_data:
 # load zipped data from url and store it in `data/raw`
 	wget -N https://www.netztest.at/RMBTStatisticServer/export/netztest-opendata.zip -P ./data/raw/
 # unzip and remove the zip
-	unzip ./data/raw/netztest-opendata.zip -d .
-	/data/raw/
+	unzip ./data/raw/netztest-opendata.zip -d ./data/raw/
 	rm ./data/raw/netztest-opendata.zip
 
 # select relevant rows and columns for modelling

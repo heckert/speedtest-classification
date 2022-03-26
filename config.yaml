@@ -11,10 +11,11 @@ files:
 
 logging:
   level: DEBUG
-  fmt: '[%(asctime)s] %(message)s'
+  fmt: '[%(levelname)s %(asctime)s %(module)s] %(message)s'
   date_fmt: '%Y-%m-%d %H:%M:%S'
 
 filters:
+# Which records to keep
   cat_technology:
     equals:
       - 3G
@@ -25,8 +26,8 @@ inputs:
 # Which columns from the raw dataset should be kept
   - lat
   - long
-  - download_kbit
-  - upload_kbit
+  - download_mbit
+  - upload_mbit
   - ping_ms
   - lte_rsrp
   - signal_strength
