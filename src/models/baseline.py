@@ -52,14 +52,16 @@ class BaselineClassifier(BaseEstimator, ClassifierMixin):
         open_category = set(self.classes_) - covered_categories
         self.open_category_ = list(open_category)[0]
 
-        # Create series from upper_limits and order
+        # Create ndarray from upper_limits and order
         # descending (highest on top).
         class_keys = [
+            # Look up index for class label in class_indices_
             self.class_indices_[class_] for class_ in self.upper_limits.keys()
         ]
         class_thresholds = list(self.upper_limits.values())
+        # Stack indices and thresholds into one ndarray.
         limits = np.column_stack([class_keys, class_thresholds])
-        # Order array descending by column w index 1
+        # Order array descending by column w index 1.
         self.ordered_limits_ = limits[limits[:, 1].argsort()][::-1]
 
         # Return the classifier
