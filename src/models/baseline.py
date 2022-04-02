@@ -13,11 +13,13 @@ class BaselineClassifier(BaseEstimator, ClassifierMixin):
     """Assigns labels based on upper limit threshold values.
 
     Args:
+        col_index (int): Which column to comare against the
+            threshold values defined in `upper_limits`.
         upper_limits (dict): Keys are classes, values represent
             numeric threshold up until which the correspoding
             class is assigned.
             For the highest class no threshold must be defined.
-            Highest class is assigned for values greater than the
+            Highest class is returned for values greater than the
             highest threshold.
 
     """

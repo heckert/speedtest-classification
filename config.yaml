@@ -33,7 +33,7 @@ inputs:
   - signal_strength
   - platform
   - network_name
+  - time_utc
 
 target:
  cat_technology
-
