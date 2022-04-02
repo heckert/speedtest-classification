@@ -29,7 +29,7 @@ inputs:
   - download_mbit
   - upload_mbit
   - ping_ms
-  - lte_rsrp
+  #- lte_rsrp
   - signal_strength
   - platform
   - network_name
