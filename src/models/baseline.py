@@ -2,9 +2,12 @@ import numpy as np
 import pandas as pd
 
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from sklearn.utils.validation import check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 
+
+# See link for how to use sklearn BaseEstimator
+# https://github.com/scikit-learn-contrib/project-template/blob/master/skltemplate/_template.py
 
 class BaselineClassifier(BaseEstimator, ClassifierMixin):
     """Assigns labels based on upper limit threshold values.
@@ -24,17 +27,13 @@ class BaselineClassifier(BaseEstimator, ClassifierMixin):
         self.upper_limits = upper_limits
 
     def fit(self, X, y):
+        """Fetches open category (higher than highest threshold)
+        and prepares descendingly ordered array of threshold values.
 
-        # Transform DataFrame to np ndarray
-        if isinstance(X, pd.DataFrame):
-            X = X.values
+        X is not actually used during fit call, but is passed regardless
+        to comply with scikit-learn's API.
+        """
 
-        # Only one column is used to compare
-        # against upper_limits
-        X = X[:, self.col_index].reshape(-1, 1)
-
-        # Check that X and y have correct shape
-        X, y = check_X_y(X, y)
         # Store the classes seen during fit
         self.classes_ = unique_labels(y)
         # Store indices in dictionary
@@ -65,9 +64,16 @@ class BaselineClassifier(BaseEstimator, ClassifierMixin):
         return self
 
     def predict(self, X):
-
         # Check if fit had been called
         check_is_fitted(self)
+
+        # Transform DataFrame to np ndarray
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+
+        # Only one column is used to compare
+        # against upper_limits
+        X = X[:, self.col_index].reshape(-1, 1)
 
         # Input validation
         X = check_array(X)
