@@ -11,6 +11,7 @@ valid_operators = {
     'less-or-equal': operator.le
 }
 
+
 def parse_filters(df: pd.DataFrame, filters: dict) -> pd.Series:
     """Get filters from config and create single pandas mask
 

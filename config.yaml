@@ -24,16 +24,19 @@ filters:
 
 inputs:
 # Which columns from the raw dataset should be kept
-  - lat
-  - long
-  - download_mbit
-  - upload_mbit
-  - ping_ms
-  #- lte_rsrp
-  - signal_strength
-  - platform
-  - network_name
-  - time_utc
+  numerics:
+    - lat
+    - long
+    - download_mbit
+    - upload_mbit
+    - ping_ms
+    #- lte_rsrp
+    - signal_strength
+  categories:
+    - platform
+    - network_name
+  datetimes:
+    - time_utc
 
 target:
  cat_technology

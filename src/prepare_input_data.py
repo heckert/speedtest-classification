@@ -33,7 +33,12 @@ def main():
     df['upload_mbit'] = df.upload_kbit / 1e3
 
     # Get full list of columns to select
-    all_columns = cfg.inputs + [cfg.target]
+    numerics = cfg.inputs.numerics
+    categories = cfg.inputs.categories
+    datetimes = cfg.inputs.datetimes
+
+    all_columns = numerics + categories + \
+        datetimes + [cfg.target]
 
     # Select relevant columns
     df = df[all_columns]

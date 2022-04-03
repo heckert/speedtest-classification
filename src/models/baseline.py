@@ -10,7 +10,8 @@ from sklearn.utils.multiclass import unique_labels
 # https://github.com/scikit-learn-contrib/project-template/blob/master/skltemplate/_template.py
 
 class BaselineClassifier(BaseEstimator, ClassifierMixin):
-    """Assigns labels based on upper limit threshold values.
+    """Assigns labels to single numeric column based on
+        upper limit threshold values.
 
     Args:
         col_index (int): Which column to comare against the
