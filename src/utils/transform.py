@@ -106,3 +106,46 @@ class FeatureCrosser(BaseEstimator, TransformerMixin):
 
         return result.reshape(-1,1)
 
+
+class OutlierRemover(BaseEstimator, TransformerMixin):
+    # TODO
+    # Define outliner in relation to dependent variable
+
+    def __init__(self, upper_threshold_factor=6, lower_threshold_factor=None):
+        self.upper_threshold_factor = upper_threshold_factor
+        self.lower_threshold_factor = lower_threshold_factor
+
+    @staticmethod
+    def _replace_values_above_thresholds(X: np.ndarray, thresholds: np.ndarray):
+        X = X.copy()
+
+        mask = X > thresholds
+        tiled_thresholds = np.tile(thresholds, (X.shape[0],1))
+
+        X[mask] = tiled_thresholds[mask]
+
+        return X
+        
+    def fit(self, X, y = None):
+
+        self.medians = np.nanmedian(X, axis=0)
+        self.stds = np.nanstd(X, axis=0)
+
+        if self.upper_threshold_factor is not None:
+            self.upper_thresholds = self.medians + self.upper_threshold_factor * self.stds
+
+        if self.lower_threshold_factor is not None:
+            self.lower_thresholds = self.medians - self.lower_threshold_factor * self.stds
+
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        if self.upper_threshold_factor is not None:
+            X = self._replace_values_above_thresholds(X, self.upper_thresholds)
+
+        if self.lower_threshold_factor is not None:
+            raise NotImplementedError('_replace_values_below_thresholds not yet implemented')
+
+        return X

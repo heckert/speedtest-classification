@@ -2,8 +2,13 @@ import matplotlib.pyplot as plt
 import sklearn.metrics
 
 
-def evaluate(y_true, y_pred, title=None,
-             classification_report=True, avg_scores=True, average='macro'):
+def evaluate(
+    y_true, y_pred,
+    title=None,
+    classification_report=True,
+    avg_scores=True,
+    average='macro'
+):
 
     sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_true, y_pred)
 
