@@ -2,16 +2,12 @@ import pandas as pd
 import pathlib
 import logging
 
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
 
 import src.utils.preprocessing
 
 
-def main():
-    # Parse configs
-    main_dir = pathlib.Path(__file__).parent.parent.resolve()
-    cfg = OmegaConf.load(main_dir / 'config.yaml')
-
+def main(cfg: DictConfig):
     # Prepare paths
     raw_data_dir = pathlib.Path(cfg.paths.data.raw)
     raw_file = raw_data_dir / cfg.files.raw_dataset
@@ -57,7 +53,3 @@ def main():
 
     # Store data as csv
     df.to_csv(processed_file, index=False)
-
-
-if __name__ == '__main__':
-    main()

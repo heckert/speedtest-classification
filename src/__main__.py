@@ -30,6 +30,6 @@ logging.basicConfig(stream=sys.stdout,
 # Prepare input data
 if args.prepareInputData:
     logging.info('Preparing input data...')
-    src.prepare_input_data.main()
+    src.prepare_input_data.main(cfg)
     logging.info('Processed input data stored at '
                  f'{cfg.paths.data.processed}/{cfg.files.processed_dataset}')
