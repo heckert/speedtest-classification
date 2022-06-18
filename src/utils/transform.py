@@ -1,9 +1,11 @@
 """Sklearn custom transformers for pipeline"""
 
 import numpy as np
+import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
+from typing import Union
 
 
 def _slice(a: np.ndarray, start: int,end: int):
@@ -21,7 +23,17 @@ def _day_of_week(dts: np.ndarray):
 
 
 class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
-    def __init__(self, keep_top_n: int = 10, bucket_name='other'):
+    """Group small categories into a common bucket.
+
+    Args:
+        keep_top_n: How many categories to keep
+        bucket_name: What to return for the new category name
+    """
+
+    def __init__(self,
+                 keep_top_n: int = 10,
+                 bucket_name: str = 'other'):
+
         self.keep_top_n = keep_top_n
         self.bucket_name = bucket_name
         
@@ -47,6 +59,10 @@ class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
 
 
 class WeekendExtractor(BaseEstimator, TransformerMixin):
+    """Transforms date column into 1s and 0s 
+        if date was on a weekend or not.
+    
+    """
     def __init__(self):
         pass
         
@@ -65,6 +81,9 @@ class WeekendExtractor(BaseEstimator, TransformerMixin):
 
 
 class HourExtractor(BaseEstimator, TransformerMixin):
+    """Extract hour from date field.
+    
+    """
     def __init__(self):
         pass
         
@@ -80,6 +99,9 @@ class HourExtractor(BaseEstimator, TransformerMixin):
 
 
 class FeatureCrosser(BaseEstimator, TransformerMixin):
+    """Append two columns into one.
+
+    """
     def __init__(self, sep='-'):
         self.sep = sep
         
@@ -108,10 +130,19 @@ class FeatureCrosser(BaseEstimator, TransformerMixin):
 
 
 class OutlierRemover(BaseEstimator, TransformerMixin):
-    # TODO
-    # Define outliner in relation to dependent variable
+    """Cap values lying a certain number of
+        standard deviations above the median.
 
-    def __init__(self, upper_threshold_factor=6, lower_threshold_factor=None):
+    Args:
+        upper_threshold_factor: How many standarddeviations above
+            the median to set the threshold.
+        lower_threshold_factor: Not yet implemented
+    """
+
+    def __init__(self,
+                 upper_threshold_factor: Union[int, None] = 6,
+                 lower_threshold_factor: Union[int, None] = None):
+
         self.upper_threshold_factor = upper_threshold_factor
         self.lower_threshold_factor = lower_threshold_factor
 
@@ -119,7 +150,16 @@ class OutlierRemover(BaseEstimator, TransformerMixin):
     def _replace_values_above_thresholds(X: np.ndarray, thresholds: np.ndarray):
         X = X.copy()
 
+        # HACK
+        # If input is pandas, transform to numpy array
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+
+        elif isinstance(X, pd.Series):
+            X = X.values.reshape(-1, 1)
+
         mask = X > thresholds
+
         tiled_thresholds = np.tile(thresholds, (X.shape[0],1))
 
         X[mask] = tiled_thresholds[mask]
