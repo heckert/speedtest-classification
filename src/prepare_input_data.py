@@ -29,18 +29,13 @@ def main(cfg: DictConfig):
     df['upload_mbit'] = df.upload_kbit / 1e3
 
     # Get full list of columns to select
-    numerics = cfg.inputs.numerics
-    categories = cfg.inputs.categories
-    datetimes = cfg.inputs.datetimes
-
-    all_columns = numerics + categories + \
-        datetimes + [cfg.target]
+    all_columns = cfg.inputs.numerics + cfg.inputs.categories + \
+        cfg.inputs.datetimes + [cfg.target]
 
     # Select relevant columns
     df = df[all_columns]
 
-    # Remove cases according to
-    # filter defined in config.yaml
+    # Filter cases as defined in config.yaml
     if cfg.filters is not None:
         df = src.utils.preprocessing.apply_filters(df=df, filters=cfg.filters)
     else:
