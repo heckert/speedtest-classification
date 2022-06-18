@@ -25,6 +25,9 @@ def _day_of_week(dts: np.ndarray):
 class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
     """Group small categories into a common bucket.
 
+    Useful to apply before One-Hot-Encoding
+    to avoid exploding dimensionalities.
+
     Args:
         keep_top_n: How many categories to keep
         bucket_name: What to return for the new category name
@@ -60,7 +63,7 @@ class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
 
 class WeekendExtractor(BaseEstimator, TransformerMixin):
     """Transforms date column into 1s and 0s 
-        if date was on a weekend or not.
+        if date falls on a weekend or not.
     
     """
     def __init__(self):
