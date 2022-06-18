@@ -140,7 +140,7 @@ class OutlierRemover(BaseEstimator, TransformerMixin):
     """
 
     def __init__(self,
-                 upper_threshold_factor: Union[int, None] = 6,
+                 upper_threshold_factor: Union[int, None] = 3,
                  lower_threshold_factor: Union[int, None] = None):
 
         self.upper_threshold_factor = upper_threshold_factor
