@@ -40,3 +40,7 @@ inputs:
 
 target:
  cat_technology
+
+baseline_thresholds:
+  3G: 20
+  4G: 150

@@ -10,6 +10,7 @@ def plot_comparison_histogram(
     title: str = None,
     dropna: bool = True,
     vlines: list = None,
+    xlabel: str = None,
     **kwargs
 ):
     for cat in categories.unique():
@@ -34,5 +35,6 @@ def plot_comparison_histogram(
         for line in vlines:
             plt.axvline(line, linestyle='--', color='grey')
 
+    plt.xlabel(xlabel)
     plt.legend()
     plt.show()

@@ -29,4 +29,8 @@ raw_data:
 input_data:
 	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python -m src --prepareInputData
 
+# install package in development mode
+develop:
+	conda develop .
+
 	

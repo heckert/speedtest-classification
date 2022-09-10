@@ -16,6 +16,7 @@ class ModelEvaluator:
         self._macro_avgs_container = {}
         self._weighted_avgs_container = {}
         self._accuracies_container = {}
+        
         self.classes = None
 
     def store(self, y_true: np.array, y_pred: np.array, *, name: str) -> None:
@@ -44,6 +45,11 @@ class ModelEvaluator:
         self._macro_avgs_container[name] = macro_avg
         self._weighted_avgs_container[name] = weighted_avg
         self._accuracies_container[name] = accuracy
+
+
+    @property
+    def model_names(self):
+        return list(self._class_results_container.keys())
 
 
     def get_summary(
@@ -84,19 +90,25 @@ class ModelEvaluator:
         Returns:
             pd.DataFrame: A multiindexed dataframe (name, class)
         """
-        return pd.DataFrame(self._macro_avgs_container).T
+        df = pd.DataFrame(self._macro_avgs_container).T
+        df.index = pd.MultiIndex.from_product([df.index, ['macro avgs']])
+
+        return df
 
 
     @staticmethod
     def _plot_abstract(
         df, *,
-        metric,
+        metric: str,
+        savepath: str
     ) -> None:
  
         df.plot(kind='bar')
         plt.title(metric)
         plt.xticks(rotation=45)
         #plt.legend(title='class')
+        if savepath:
+            plt.savefig(savepath)
         plt.show()
 
 
@@ -105,10 +117,11 @@ class ModelEvaluator:
         type: str,
         metric: str
     ) -> pd.DataFrame:
-        
+
 
         transformations = {
-            'class_results': self.class_results[metric].unstack()
+            'classwise': self.class_results[metric].unstack(),
+            'macro': self.macro_results[metric].unstack().loc[self.model_names,:]
         }
 
         if type not in transformations.keys():
@@ -119,12 +132,14 @@ class ModelEvaluator:
 
     
     def plot(
-        self,
-        type='class_results',
-        metric='f1-score'
+        self, *,
+        type='classwise',
+        metric='f1-score',
+        savepath=None
     ) -> None:
 
         self._plot_abstract(
             df=self._get_plot_df(type=type, metric=metric),
-            metric=metric
+            metric=metric,
+            savepath=savepath
         )
