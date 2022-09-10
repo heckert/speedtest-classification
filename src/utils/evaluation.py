@@ -108,7 +108,7 @@ class ModelEvaluator:
         plt.xticks(rotation=45)
         #plt.legend(title='class')
         if savepath:
-            plt.savefig(savepath)
+            plt.savefig(savepath, bbox_inches='tight')
         plt.show()
 
 
