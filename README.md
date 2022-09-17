@@ -13,7 +13,7 @@ Before building any machine learning model, it is sensible to start with a simpl
 This will give you a benchmark that your more complex models have to beat to be truly useful.
 For this project I looked at the distribution of download speeds in mbit/s and manually set threshold values to differentiate between the three categories.
 
-![image](images/baseline-cut-offs.png)
+![](images/baseline-cut-offs.png)
 
 I set the upper threshold value for 3G at 20 mbit/s and for 4G at 150 mbit/s.
 According to this baseline model, any measurement with a download speed below 20 mbit/s is classified as 3G, speeds between 20 and 150 mbit/s are classified as 4G, and anything beyond 150 mbit/s is classified 5G.  
@@ -21,7 +21,7 @@ See `notebooks/02-baseline.ipynb` & `src/models/baseline.py` for the implementat
 
 ### _Use transform pipelines for feature generation_  
 
-Inspired the Transform Design Pattern described in the book ![Machine Learning Design Patterns](https://www.oreilly.com/library/view/machine-learning-design/9781098115777/) by Lakshmanan et al., I included all feature preparation into modular transformations that are part of the model pipeline.
+Inspired the Transform Design Pattern described in the book [Machine Learning Design Patterns](https://www.oreilly.com/library/view/machine-learning-design/9781098115777/) by Lakshmanan et al., I included all feature preparation into modular transformations that are part of the model pipeline.
 This approach offers several advantages compared with manually tranforming the dataset before feeding it into the model:
 * It eliminates the need to copy & paste the transformation logic between training and prediction workflow, thus reducing the risk for train/serving skew.
 * There is a clear separation between input values and features. As a consequence, the input values remain interpretable (e.g., not yet scaled, categories are not yet one-hot-encoded).
