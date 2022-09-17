@@ -2,9 +2,9 @@
 Exploring multiclass classification with LightGBM and sklearn custom transformation pipelines on internet speedtest data.  
 
 ## Aim
-The dataset contains information such as down- & upload speed, ping, signal strength, a timestamp of when the test was conducted, the network name,, location of the device, and technology.
-It is gathered by an internet speedtest tool and publicly available.
-Aim of this toy-project is to use the metrics recorded during the test to classify whether it was made via a 3G, 4G, or 5G connection.  
+The dataset contains information such as down- & upload speed, ping, signal strength, a timestamp of when the test was conducted, the network name, location of the device, and technology.
+The data was gathered by an internet speedtest tool and is publicly available LINK.
+Aim of this toy-project is to use the metrics recorded during the speedtest to classify whether it was performed via a 3G, 4G, or 5G connection.  
 
 ## Learnings
 ### _Simple baseline first_ 
@@ -21,7 +21,7 @@ See `notebooks/02-baseline.ipynb` & `src/models/baseline.py` for the implementat
 
 ### _Use transform pipelines for feature generation_  
 
-Inspired the Transform Design Pattern described in the book [Machine Learning Design Patterns](https://www.oreilly.com/library/view/machine-learning-design/9781098115777/) by Lakshmanan et al., I included all feature preparation into modular transformations that are part of the model pipeline.
+Inspired by the Transform Design Pattern described in the book [Machine Learning Design Patterns](https://www.oreilly.com/library/view/machine-learning-design/9781098115777/) by Lakshmanan et al., I included all feature preparation into modular transformations that are part of the model pipeline.
 This approach offers several advantages compared with manually tranforming the dataset before feeding it into the model:
 * It eliminates the need to copy & paste the transformation logic between training and prediction workflow, thus reducing the risk for train/serving skew.
 * There is a clear separation between input values and features. As a consequence, the input values remain interpretable (e.g., not yet scaled, categories are not yet one-hot-encoded).
