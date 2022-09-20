@@ -31,6 +31,6 @@ input_data:
 
 # install package in development mode
 develop:
-	conda develop .
+	@$(CONDA_ACTIVATE) $(PROJECT_NAME); conda develop .
 
 	
