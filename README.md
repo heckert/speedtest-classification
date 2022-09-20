@@ -43,7 +43,7 @@ Whereas the two logistic regression variants only slightly outperformed the base
 will create a conda environment with the packages listed in `environment.yaml`.  
 
     make develop
-will will install the src package in development mode within the conda environment. 
+will install the src package in development mode within the conda environment. 
 
     make raw_data
 will load the dataset from the web.
