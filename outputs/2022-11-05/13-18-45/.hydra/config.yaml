@@ -1,0 +1,37 @@
+paths:
+  data:
+    main: ./data
+    raw: ${paths.data.main}/raw
+    interim: ${paths.data.main}/interim
+    processed: ${paths.data.main}/processed
+files:
+  raw_dataset: netztest-opendata.csv
+  processed_dataset: netztest-opendata-processed.csv
+logging:
+  level: DEBUG
+  fmt: '[%(levelname)s %(asctime)s %(module)s] %(message)s'
+  date_fmt: '%Y-%m-%d %H:%M:%S'
+filters:
+  cat_technology:
+    equals:
+    - 3G
+    - 4G
+    - 5G
+inputs:
+  numerics:
+  - lat
+  - long
+  - download_mbit
+  - upload_mbit
+  - ping_ms
+  - lte_rsrp
+  - signal_strength
+  categories:
+  - platform
+  - network_name
+  datetimes:
+  - time_utc
+target: cat_technology
+baseline_thresholds:
+  3G: 20
+  4G: 150

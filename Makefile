@@ -26,8 +26,8 @@ raw_data:
 	rm ./data/raw/netztest-opendata.zip
 
 # select relevant rows and columns for modelling
-input_data:
-	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python -m src --prepareInputData
+input_data: develop
+	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python src/prepare_input_data.py
 
 # install package in development mode
 develop:

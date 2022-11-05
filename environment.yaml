@@ -12,7 +12,7 @@ dependencies:
   - lightgbm
   - ipykernel
   - pandas-profiling
-  - omegaconf=2.0.0  # avoid antlr warning in vs code
+  - hydra-core
   - pip
-  - pip:
-      - antlr4-python3-runtime==4.8
+  #- pip:
+  #    - antlr4-python3-runtime==4.8

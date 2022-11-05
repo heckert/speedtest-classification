@@ -1,12 +1,17 @@
+import hydra
 import pandas as pd
 import pathlib
 import logging
 
 from omegaconf import DictConfig
 
-import src.utils.preprocessing
+import src.utils.filtering
 
 
+logger = logging.getLogger(__name__)
+
+
+@hydra.main(version_base=None, config_path="../conf", config_name="config")
 def main(cfg: DictConfig):
     # Prepare paths
     raw_data_dir = pathlib.Path(cfg.paths.data.raw)
@@ -37,14 +42,19 @@ def main(cfg: DictConfig):
 
     # Filter cases as defined in config.yaml
     if cfg.filters is not None:
-        df = src.utils.preprocessing.apply_filters(df=df, filters=cfg.filters)
+        df = src.utils.filtering.apply_filters(df=df, filters=cfg.filters)
     else:
-        logging.debug('No filters applied')
+        logger.debug('No filters applied')
 
-    logging.debug(
+    logger.info(
         'Number of rows/cols in processed dataframe: {:,} / {}'
         .format(*df.shape)
     )
 
     # Store data as csv
+    logger.info(f'Storing processed data at {processed_file}')
     df.to_csv(processed_file, index=False)
+
+if __name__ == '__main__':
+    main()
+
