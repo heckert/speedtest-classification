@@ -10,7 +10,7 @@ CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh ; conda activ
 environment:
 # create conda env from environemt.yml file
 	@echo "Creating conda environment for $(PROJECT_NAME)..."
-	@conda env create -n $(PROJECT_NAME) -f environment.yaml
+	@mamba env create -n $(PROJECT_NAME) -f environment.yaml
 
 test:
 	@$(CONDA_ACTIVATE) $(PROJECT_NAME); pytest
@@ -27,7 +27,7 @@ raw_data:
 
 # select relevant rows and columns for modelling
 input_data: develop
-	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python src/prepare_input_data.py
+	@$(CONDA_ACTIVATE) $(PROJECT_NAME); python -m speedtest.prepare_input_data
 
 # install package in development mode
 develop:

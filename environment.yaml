@@ -13,6 +13,7 @@ dependencies:
   - ipykernel
   - pandas-profiling
   - hydra-core
+  - conda-build
   - pip
   #- pip:
   #    - antlr4-python3-runtime==4.8

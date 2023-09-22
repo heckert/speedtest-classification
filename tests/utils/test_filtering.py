@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from src.utils.filtering import parse_filters
+from speedtest.utils.filtering import parse_filters
 
 
 @pytest.fixture

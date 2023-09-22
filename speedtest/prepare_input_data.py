@@ -5,19 +5,19 @@ import logging
 
 from omegaconf import DictConfig
 
-import src.utils.filtering
+import speedtest.utils.filtering
 
 
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(version_base=None, config_path="../conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: DictConfig):
     # Prepare paths
     raw_data_dir = pathlib.Path(cfg.paths.data.raw)
-    raw_file = raw_data_dir / cfg.files.raw_dataset
+    raw_file = raw_data_dir / cfg.files.raw
     processed_data_dir = pathlib.Path(cfg.paths.data.processed)
-    processed_file = processed_data_dir / cfg.files.processed_dataset
+    processed_file = processed_data_dir / cfg.files.processed
 
     # Pass dtypes for selected fields
     # to avoid mixed dtypes warning
@@ -42,7 +42,7 @@ def main(cfg: DictConfig):
 
     # Filter cases as defined in config.yaml
     if cfg.filters is not None:
-        df = src.utils.filtering.apply_filters(df=df, filters=cfg.filters)
+        df = speedtest.utils.filtering.apply_filters(df=df, filters=cfg.filters)
     else:
         logger.debug('No filters applied')
 

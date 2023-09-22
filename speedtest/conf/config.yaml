@@ -2,12 +2,11 @@ paths:
   data:
     main: ./data
     raw: ${paths.data.main}/raw
-    interim: ${paths.data.main}/interim
     processed: ${paths.data.main}/processed
   
 files:
-  raw_dataset: netztest-opendata.csv
-  processed_dataset: netztest-opendata-processed.csv
+  raw: netztest-opendata.csv
+  processed: netztest-opendata-processed.csv
 
 logging:
   level: DEBUG
@@ -31,7 +30,7 @@ inputs:
     - upload_mbit
     - ping_ms
     - lte_rsrp
-    - signal_strength
+    # - signal_strength
   categories:
     - platform
     - network_name
