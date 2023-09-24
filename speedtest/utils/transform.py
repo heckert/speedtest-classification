@@ -1,11 +1,9 @@
-"""Sklearn custom transformers for pipeline"""
-
 import numpy as np
+import operator
 import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.utils.validation import check_is_fitted
-from typing import Union
+from typing import Union, Callable
 
 
 def _slice(a: np.ndarray, start: int,end: int):
@@ -15,18 +13,169 @@ def _slice(a: np.ndarray, start: int,end: int):
     b = a.view((str,1)).reshape(len(a),-1)[:,start:end]
     return np.fromstring(b.tostring(),dtype=(str,end-start))
 
-def _day_of_week(dts: np.ndarray):
+def _day_of_week(dates: np.ndarray) -> np.ndarray:
     """https://stackoverflow.com/questions/
        52398383/finding-day-of-the-week-for-a-datetime64
     """
-    return (dts.astype('datetime64[D]').view('int64') - 4) % 7
+    return (dates.astype('datetime64[D]').view('int64') - 4) % 7
+    
+def _convert_pd_to_np(X: Union[pd.DataFrame, pd.Series]) -> np.ndarray:
+    X = X.values
+
+    # Series are one-dimensional. Reshape to 2 dims.
+    if X.ndim == 1:
+        X = X.reshape(-1, 1)
+
+    return X
+
+
+class HourExtractor(BaseEstimator, TransformerMixin):
+    """Extract hour from date field.
+    
+    """
+    def __init__(self, utc_to_cet: bool = True):
+        self.utc_to_cet = utc_to_cet
+        
+    def fit(self, X, y = None):
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        # If input is pandas, transform to numpy array
+        if isinstance(X, (pd.DataFrame, pd.Series)):
+            X = _convert_pd_to_np(X)
+
+        hours = _slice(X.astype(str), 11, 13).reshape(-1,1)
+
+        return hours.astype(int)
+
+
+class WeekdayExtractor(BaseEstimator, TransformerMixin):
+    """Transforms date column into 1s and 0s 
+        if date falls on a weekend or not.
+    
+    """
+        
+    def fit(self, X, y = None):
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        # If input is pandas, transform to numpy array
+        if isinstance(X, (pd.DataFrame, pd.Series)):
+            X = _convert_pd_to_np(X)
+
+        datetimes = X.astype('datetime64[D]')
+        weekdays = _day_of_week(datetimes)
+
+        return weekdays.reshape(-1,1)
+    
+
+class WeekendExtractor(BaseEstimator, TransformerMixin):
+    """Transforms date column into 1s and 0s 
+        if date falls on a weekend or not.
+    
+    """
+
+    def fit(self, X, y = None):
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        datetimes = X.astype('datetime64[D]')
+        weekdays = _day_of_week(datetimes)
+        weekend_bin = np.ones(shape=weekdays.shape)
+        weekend_bin[weekdays<5] = 0
+
+        return weekend_bin.reshape(-1,1)
+
+
+class OutlierClipper(BaseEstimator, TransformerMixin):
+    """Cap values according to quantiles.
+
+    Args:
+        upper_limit: Percentile beyond which to clip the values. Between 0 and 1
+        lower_limit: Not yet implemented
+    """
+
+    def __init__(self,
+                 lower_limit: float = .01,
+                 upper_limit: float = .99):
+
+        self.lower_limit = lower_limit
+        self.upper_limit = upper_limit
+
+    @staticmethod
+    def _replace_values_beyond_thresholds(
+        X: np.ndarray,
+        thresholds: np.ndarray,
+        compare: Callable
+    ) -> np.ndarray:
+
+        X = X.copy()
+
+        # If input is pandas, transform to numpy array
+        if isinstance(X, (pd.DataFrame, pd.Series)):
+            X = _convert_pd_to_np(X)
+
+        mask = compare(X, thresholds)
+
+        tiled_thresholds = np.tile(thresholds, (X.shape[0], 1))
+
+        X[mask] = tiled_thresholds[mask]
+
+        return X
+
+        
+    def fit(self, X, y = None):
+
+        self.upper_quantiles = np.nanquantile(X, self.upper_limit, axis=0)
+        self.lower_quantiles = np.nanquantile(X, self.lower_limit, axis=0)
+
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        X = self._replace_values_beyond_thresholds(X, self.upper_quantiles, operator.gt)
+        X = self._replace_values_beyond_thresholds(X, self.lower_quantiles, operator.lt)
+
+        return X
+
+
+class RatioCalculator(BaseEstimator, TransformerMixin):
+    def fit(self, X, y = None):
+
+        return self
+
+    def transform(self, X, y = None):
+        X = X.copy()
+
+        # If input is pandas, transform to numpy array
+        if isinstance(X, (pd.DataFrame, pd.Series)):
+            X = _convert_pd_to_np(X)
+
+        if X.shape[1] != 2:
+            raise Exception('Input has to have two columns')
+        
+        # Replace 0 in denominator before division
+        denom = X[:, 1]
+        denom[denom==0] = 1e-6
+
+        return (X[:, 0] / denom).reshape(-1,1)
+
+
 
 
 class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
     """Group small categories into a common bucket.
 
-    Useful to apply before One-Hot-Encoding
-    to avoid exploding dimensionalities.
+    Useful to apply before One-Hot-Encoding to avoid exploding dimensionalities.
+    No longer needed since sklearn's OHE introduced kwarg `max_categories` 
+    in version 1.1.
 
     Args:
         keep_top_n: How many categories to keep
@@ -59,136 +208,3 @@ class FringeCategoryBucketer(BaseEstimator, TransformerMixin):
         cleaner_func = np.vectorize(lambda x: x if x in self.selected_cats else self.bucket_name)
 
         return cleaner_func(X)
-
-
-class WeekendExtractor(BaseEstimator, TransformerMixin):
-    """Transforms date column into 1s and 0s 
-        if date falls on a weekend or not.
-    
-    """
-    def __init__(self):
-        pass
-        
-    def fit(self, X, y = None):
-        return self
-
-    def transform(self, X, y = None):
-        X = X.copy()
-
-        datetimes = X.astype('datetime64[D]')
-        weekdays = _day_of_week(datetimes)
-        weekend_bin = np.ones(shape=weekdays.shape)
-        weekend_bin[weekdays<5] = 0
-
-        return weekend_bin.reshape(-1,1)
-
-
-class HourExtractor(BaseEstimator, TransformerMixin):
-    """Extract hour from date field.
-    
-    """
-    def __init__(self):
-        pass
-        
-    def fit(self, X, y = None):
-        return self
-
-    def transform(self, X, y = None):
-        X = X.copy()
-
-        hours = _slice(X.astype(str), 11, 13).reshape(-1,1)
-
-        return hours.astype(int)
-
-
-class FeatureCrosser(BaseEstimator, TransformerMixin):
-    """Append two columns into one.
-
-    """
-    def __init__(self, sep='-'):
-        self.sep = sep
-        
-    def fit(self, X, y = None):
-        return self
-
-    def transform(self, X, y = None):
-        X = X.copy()
-        
-        if X.shape[1] != 2:
-            raise Exception('Input has to have two columns')
-
-        array_list = []
-
-        for i in range(X.shape[1]):
-            arr = X[:, i]
-            # If numeric, convert to int
-            if np.issubdtype(arr.dtype, np.number):
-                arr = arr.astype(int)
-            str_array = np.array(arr, dtype=str)
-            array_list.append(str_array)
-
-        result = np.apply_along_axis(self.sep.join, 0, array_list)
-
-        return result.reshape(-1,1)
-
-
-class OutlierRemover(BaseEstimator, TransformerMixin):
-    """Cap values lying a certain number of
-        standard deviations above the median.
-
-    Args:
-        upper_threshold_factor: How many standarddeviations above
-            the median to set the threshold.
-        lower_threshold_factor: Not yet implemented
-    """
-
-    def __init__(self,
-                 upper_threshold_factor: Union[int, None] = 3,
-                 lower_threshold_factor: Union[int, None] = None):
-
-        self.upper_threshold_factor = upper_threshold_factor
-        self.lower_threshold_factor = lower_threshold_factor
-
-    @staticmethod
-    def _replace_values_above_thresholds(X: np.ndarray, thresholds: np.ndarray):
-        X = X.copy()
-
-        # HACK
-        # If input is pandas, transform to numpy array
-        if isinstance(X, pd.DataFrame):
-            X = X.values
-
-        elif isinstance(X, pd.Series):
-            X = X.values.reshape(-1, 1)
-
-        mask = X > thresholds
-
-        tiled_thresholds = np.tile(thresholds, (X.shape[0],1))
-
-        X[mask] = tiled_thresholds[mask]
-
-        return X
-        
-    def fit(self, X, y = None):
-
-        self.medians = np.nanmedian(X, axis=0)
-        self.stds = np.nanstd(X, axis=0)
-
-        if self.upper_threshold_factor is not None:
-            self.upper_thresholds = self.medians + self.upper_threshold_factor * self.stds
-
-        if self.lower_threshold_factor is not None:
-            self.lower_thresholds = self.medians - self.lower_threshold_factor * self.stds
-
-        return self
-
-    def transform(self, X, y = None):
-        X = X.copy()
-
-        if self.upper_threshold_factor is not None:
-            X = self._replace_values_above_thresholds(X, self.upper_thresholds)
-
-        if self.lower_threshold_factor is not None:
-            raise NotImplementedError('_replace_values_below_thresholds not yet implemented')
-
-        return X
