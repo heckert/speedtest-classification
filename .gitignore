@@ -94,3 +94,4 @@ target/
 
 # hyra ouputs
 outputs/
+*.joblib

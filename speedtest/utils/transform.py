@@ -30,12 +30,8 @@ def _convert_pd_to_np(X: Union[pd.DataFrame, pd.Series]) -> np.ndarray:
 
 
 class HourExtractor(BaseEstimator, TransformerMixin):
-    """Extract hour from date field.
-    
-    """
-    def __init__(self, utc_to_cet: bool = True):
-        self.utc_to_cet = utc_to_cet
-        
+    """Extract hour from date field.""" 
+
     def fit(self, X, y = None):
         return self
 
